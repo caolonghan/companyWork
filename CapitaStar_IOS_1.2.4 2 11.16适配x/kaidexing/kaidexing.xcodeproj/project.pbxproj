@@ -3437,6 +3437,7 @@
 				26B4EF201E91360600433842 /* Images.xcassets */,
 				63ADC7031C1131D300308022 /* Info.plist */,
 				63ADC7041C1131D300308022 /* main.m */,
+				63F88EFE1EB86039003536B3 /* model */,
 				63ADC7051C1131D300308022 /* Mine */,
 				63ADC7111C1131D300308022 /* MyResource */,
 				9C6A7C761D1BDF5A003C511F /* area.plist */,
@@ -3570,7 +3571,6 @@
 		63ADC7051C1131D300308022 /* Mine */ = {
 			isa = PBXGroup;
 			children = (
-				63F88EFE1EB86039003536B3 /* model */,
 				63F88EFD1EB86021003536B3 /* netRequest */,
 				6370776A1E9B3ABA00C9C268 /* MineViewController.h */,
 				637077691E9B3ABA00C9C268 /* MineViewController.m */,
@@ -4293,6 +4293,7 @@
 			children = (
 			);
 			name = model;
+			path = Mine;
 			sourceTree = "<group>";
 		};
 		63FB7ADA1CFFC94C001A7675 /* shopping@3x */ = {

@@ -687,8 +687,8 @@
    self.headScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0,NAV_HEIGHT+FUN_HIGHT,WIN_WIDTH,0)];
     
     self.headScrollView.delegate=self;
-   // self.headScrollView.backgroundColor = UIColorFromRGB(0xf2f2f2);
-    self.headScrollView.backgroundColor = [UIColor redColor];
+    self.headScrollView.backgroundColor = UIColorFromRGB(0xf2f2f2);
+    
     [self.view addSubview:self.headScrollView];
 }
 
@@ -1183,8 +1183,7 @@
 -(void) createInfo{
     if(![Util isNull:huodongDic[@"rec_consult"]]){
 
-        infoView = [self createHuoDongView:huodongDic[@"rec_consult"]];
-        infoView.tag = 0;
+        infoView = [self createHuoDongView:huodongDic[@"rec_consult"] tag:0];
         CGRect frame = infoView.frame;
         frame.origin.y = scroll_TOP_H;
         infoView.frame = frame;
@@ -1194,7 +1193,7 @@
     }
     [self acreateLunBoImg];
 }
-
+//咨询
 -(void) onHuoDongViewTap:(UITapGestureRecognizer*) tap{
     int tag = [tap view].tag;
     NSString* url= @"";
@@ -1211,7 +1210,8 @@
 }
 
 //创建资讯单元视图
--(UIView*) createHuoDongView:(NSDictionary*) dic{
+-(UIView*) createHuoDongView:(NSDictionary*) dic tag:(NSInteger)tag
+{
     CGFloat titleHieght=M_WIDTH(24);
     CGFloat infoView_H=M_WIDTH(167);
     CGFloat botomHight=M_WIDTH(24);
@@ -1220,7 +1220,7 @@
     
     UIView* containView =[[UIView alloc]initWithFrame:CGRectMake(0,8,WIN_WIDTH,titleHieght+infoView_H+botomHight )];
     containView.backgroundColor=[UIColor whiteColor];
-    
+    containView.tag = tag;
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onHuoDongViewTap:)];
     [containView addGestureRecognizer:tap];
     
@@ -1242,8 +1242,6 @@
     } @finally {
         
     }
-    
-    
     
     UIImageView * imgView = [[UIImageView alloc] init];
     imgView.frame = CGRectMake(0, titleHieght, WIN_WIDTH, infoView_H);
@@ -1268,8 +1266,7 @@
     NSArray* huodongList = huodongDic[@"consultlist"];
     
     for(int i = 0; i < huodongList.count; i++){
-        UIView* infoV = [self createHuoDongView:huodongList[i]];
-        infoV.tag = i+1;
+        UIView* infoV = [self createHuoDongView:huodongList[i] tag:i+1];
         CGRect frame = infoV.frame;
         frame.origin.y = scroll_TOP_H + i*frame.size.height;
         infoV.frame = frame;

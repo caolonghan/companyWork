@@ -473,7 +473,8 @@
             [self.delegate.navigationController pushViewController:cVC animated:YES];
         }else if (indexPath.row == 1) {
             
-            OrderWebViewController *mvc = [[OrderWebViewController alloc]init];
+            GoViewController *mvc = [[GoViewController alloc]init];
+           // OrderWebViewController *mvc = [[OrderWebViewController alloc]init];
             mvc.path=[NSString stringWithFormat:@"%@integral_mall/order_index?vip_mall_id=%@",[Global sharedClient].HTTP_VIP,[Global sharedClient].markID];
             [self.delegate.navigationController pushViewController:mvc animated:YES];
             

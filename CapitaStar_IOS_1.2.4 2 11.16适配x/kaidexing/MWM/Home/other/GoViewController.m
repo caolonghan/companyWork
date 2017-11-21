@@ -50,21 +50,81 @@
     {
         [storage deleteCookie:cookie];
     }
-
-    // Do any additional setup after loading the view.
     self.title = @"";
     
 //分享
     if ([_path rangeOfString:@"is_share=1"].location != NSNotFound) {
         [self createNavUMShare];
     }
-//    if (![Util isNull:_isShare] &&[_isShare isEqualToString:@"share"]) {
-//        [self createNavUMShare];
-//    }
-    [self loadHtmlByPath:_path];
-   
-}
 
+    [self loadHtmlByPath:_path];
+    [self createWebView];
+}
+- (void)createWebView
+{
+    NSString* domian = [@"." stringByAppendingString:[Global sharedClient].API_DOMAIN ];
+    NSMutableArray *cookies = [[NSMutableArray alloc] init];
+    NSString *strUrl = [_path stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSURL *url=[NSURL URLWithString:strUrl];
+    if(![Util isNull:[Global sharedClient].userCookies]){
+        
+        NSDictionary *properties = [[NSMutableDictionary alloc] init];
+        [properties setValue:[Global sharedClient].userCookies forKey:NSHTTPCookieValue];
+        [properties setValue:@"0799C3B5EA3898E6E72A08A5557D16EA03D5E30B7DF6FECD" forKey:NSHTTPCookieName];
+        [properties setValue:domian forKey:NSHTTPCookieDomain];
+        [properties setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
+        [properties setValue:@"/" forKey:NSHTTPCookiePath];
+        
+        NSHTTPCookie *cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
+        [cookies addObject:cookie];
+    }else{
+        if(loginCount > 0){
+            [self.delegate.navigationController popViewControllerAnimated:YES];
+            return;
+        }else{
+            loginCount = 0;
+        }
+    }
+    if(![Util isNull:[Global sharedClient].markCookies]){
+        NSDictionary *properties1 = [[NSMutableDictionary alloc] init];
+        [properties1 setValue:[Global sharedClient].markCookies forKey:NSHTTPCookieValue];
+        [properties1 setValue:@"4CA043AA7659441F0468007AD296A053" forKey:NSHTTPCookieName];
+        [properties1 setValue:domian forKey:NSHTTPCookieDomain];
+        [properties1 setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
+        [properties1 setValue:@"/" forKey:NSHTTPCookiePath];
+        
+        NSHTTPCookie *cookie1 =
+        [[NSHTTPCookie alloc] initWithProperties:properties1];
+        [cookies addObject:cookie1];
+    }
+    
+    if(![Util isNull:[Global sharedClient].markCookies]){
+        NSDictionary *properties2 = [[NSMutableDictionary alloc] init];
+        [properties2 setValue:[Global sharedClient].markCookies forKey:NSHTTPCookieValue];
+        [properties2 setValue:@"9536D5BEA279153E3BB79FE5EFD6B3EA" forKey:NSHTTPCookieName];
+        [properties2 setValue:domian forKey:NSHTTPCookieDomain];
+        [properties2 setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
+        [properties2 setValue:@"/" forKey:NSHTTPCookiePath];
+        
+        NSHTTPCookie *cookie2 =
+        [[NSHTTPCookie alloc] initWithProperties:properties2];
+        [cookies addObject:cookie2];
+    }
+    
+    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url];
+    
+    if(cookies.count > 0){
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage]setCookies:cookies forURL:[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@://%@",[Global sharedClient].HTTP_S,domian]]  mainDocumentURL:nil];
+    }
+    self.webView.scrollView.delegate=self;
+    self.webView.scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag; // 当拖动时移除键盘
+    [self.webView loadRequest:request];
+    self.webView.delegate = self;
+    
+    if ([self.delegate.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.delegate.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+}
 #pragma mark  ------  顶部分享  ------
 -(void)createNavUMShare{
     shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -212,68 +272,7 @@
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    NSString* domian = [@"." stringByAppendingString:[Global sharedClient].API_DOMAIN ];
-    NSMutableArray *cookies = [[NSMutableArray alloc] init];
-    NSString *strUrl = [_path stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSURL *url=[NSURL URLWithString:strUrl];
-    if(![Util isNull:[Global sharedClient].userCookies]){
-        
-        NSDictionary *properties = [[NSMutableDictionary alloc] init];
-        [properties setValue:[Global sharedClient].userCookies forKey:NSHTTPCookieValue];
-        [properties setValue:@"0799C3B5EA3898E6E72A08A5557D16EA03D5E30B7DF6FECD" forKey:NSHTTPCookieName];
-        [properties setValue:domian forKey:NSHTTPCookieDomain];
-        [properties setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
-        [properties setValue:@"/" forKey:NSHTTPCookiePath];
-        
-        NSHTTPCookie *cookie = [[NSHTTPCookie alloc] initWithProperties:properties];
-        [cookies addObject:cookie];
-    }else{
-        if(loginCount > 0){
-            [self.delegate.navigationController popViewControllerAnimated:YES];
-            return;
-        }else{
-            loginCount = 0;
-        }
-    }
-    if(![Util isNull:[Global sharedClient].markCookies]){
-        NSDictionary *properties1 = [[NSMutableDictionary alloc] init];
-        [properties1 setValue:[Global sharedClient].markCookies forKey:NSHTTPCookieValue];
-        [properties1 setValue:@"4CA043AA7659441F0468007AD296A053" forKey:NSHTTPCookieName];
-        [properties1 setValue:domian forKey:NSHTTPCookieDomain];
-        [properties1 setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
-        [properties1 setValue:@"/" forKey:NSHTTPCookiePath];
-        
-        NSHTTPCookie *cookie1 =
-        [[NSHTTPCookie alloc] initWithProperties:properties1];
-        [cookies addObject:cookie1];
-    }
-    
-    if(![Util isNull:[Global sharedClient].markCookies]){
-        NSDictionary *properties2 = [[NSMutableDictionary alloc] init];
-        [properties2 setValue:[Global sharedClient].markCookies forKey:NSHTTPCookieValue];
-        [properties2 setValue:@"9536D5BEA279153E3BB79FE5EFD6B3EA" forKey:NSHTTPCookieName];
-        [properties2 setValue:domian forKey:NSHTTPCookieDomain];
-        [properties2 setValue:[NSDate dateWithTimeIntervalSinceNow:60*60] forKey:NSHTTPCookieExpires];
-        [properties2 setValue:@"/" forKey:NSHTTPCookiePath];
-        
-        NSHTTPCookie *cookie2 =
-        [[NSHTTPCookie alloc] initWithProperties:properties2];
-        [cookies addObject:cookie2];
-    }
-    
-    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url];
-    
-    if(cookies.count > 0){
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage]setCookies:cookies forURL:[[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@://%@",[Global sharedClient].HTTP_S,domian]]  mainDocumentURL:nil];
-    }
-    self.webView.scrollView.delegate=self;
-    self.webView.scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag; // 当拖动时移除键盘
-    [self.webView loadRequest:request];
-    self.webView.delegate = self;
-    
-    if ([self.delegate.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.delegate.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    }
+
 }
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     NSLog(@"web加载开始");

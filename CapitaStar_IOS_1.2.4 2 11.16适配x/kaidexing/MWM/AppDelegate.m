@@ -33,28 +33,28 @@ RTLbsMapManager *_mapManager;
 
 @end
 
-////模拟器运行
-//#if TARGET_OS_SIMULATOR
-//@implementation EasyARSceneController
-//@end
-//@implementation EasyARScene
-//- (void)setFPS:(int)fps{}
-//- (void)loadJavaScript:(NSString *)uriPath{}
-//- (void)loadJavaScript:(NSString *)uriPath content:(NSString *)content{}
-//- (void)loadManifest:(NSString *)uriPath{}
-//- (void)loadManifest:(NSString *)uriPath content:(NSString *)content{}
-//- (void)preLoadTarget:(NSString *)targetDesc onLoadHandler:(void (^)(bool status)) onLoadHandler
-//       onFoundHandler:(void (^)()) onFoundHandler onLostHandler:(void (^)()) onLostHandler{}
-//- (void)sendMessage:(NSString *)name params:(NSArray<NSString *> *)params{}
-//- (void)setMessageReceiver:(void (^)(NSString * name, NSArray<NSString *> * params))receiver{}
-//+ (void)setUriTranslator:(NSString * (^)(NSString * uri))translator{}
-//- (void)snapshot:(void(^)(UIImage *image))onSuccess failed:(void(^)(NSString *msg))onFailed{}
-//- (void)setupCloud:(NSString *)server key:(NSString *)key secret:(NSString *)secret{}
-//@end
-//@implementation EasyAR3D
-//+ (void) initialize:(NSString*)key{}
-//@end
-//#endif
+//模拟器运行
+#if TARGET_OS_SIMULATOR
+@implementation EasyARSceneController
+@end
+@implementation EasyARScene
+- (void)setFPS:(int)fps{}
+- (void)loadJavaScript:(NSString *)uriPath{}
+- (void)loadJavaScript:(NSString *)uriPath content:(NSString *)content{}
+- (void)loadManifest:(NSString *)uriPath{}
+- (void)loadManifest:(NSString *)uriPath content:(NSString *)content{}
+- (void)preLoadTarget:(NSString *)targetDesc onLoadHandler:(void (^)(bool status)) onLoadHandler
+       onFoundHandler:(void (^)()) onFoundHandler onLostHandler:(void (^)()) onLostHandler{}
+- (void)sendMessage:(NSString *)name params:(NSArray<NSString *> *)params{}
+- (void)setMessageReceiver:(void (^)(NSString * name, NSArray<NSString *> * params))receiver{}
++ (void)setUriTranslator:(NSString * (^)(NSString * uri))translator{}
+- (void)snapshot:(void(^)(UIImage *image))onSuccess failed:(void(^)(NSString *msg))onFailed{}
+- (void)setupCloud:(NSString *)server key:(NSString *)key secret:(NSString *)secret{}
+@end
+@implementation EasyAR3D
++ (void) initialize:(NSString*)key{}
+@end
+#endif
 
 @implementation AppDelegate
     
@@ -107,10 +107,7 @@ static int jpushCount = 0;
         
     }
    
-    
-    
-    
-//    [application setStatusBarStyle:UIStatusBarStyleLightContent];
+
     
     NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
     NSString * member_id = [userDefaults valueForKey:@"member_id"];
@@ -136,7 +133,7 @@ static int jpushCount = 0;
         [Global sharedClient].markID      =[userDefaults valueForKey:@"mall_id"];
     }
     
-    
+    [self setUA];
     
     //MagicRroximityKit 用户感知第三方
 //    CAMagicConfig* config = [[CAMagicConfig alloc] initWithAppkey:MsgicAppKey  appSecret:MsgicAppSecret];
@@ -207,7 +204,17 @@ static int jpushCount = 0;
     vc.adViewdelegate = navigationController;
     [navigationController presentViewController: vc animated:NO completion:nil];
 }
+- (void)setUA{
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    NSString *userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *currentVersion = [infoDict objectForKey:@"CFBundleShortVersionString"];
+   NSString *newUserAgent = [userAgent stringByAppendingString:[NSString stringWithFormat:@"/CapitaStar2.0/%@", currentVersion]];//自定义需要拼接的字符串
+    NSLog(@"newUserAgent=%@",newUserAgent);
+//    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:newUserAgent, @"UserAgent", nil];
+//    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
 
+}
 
 /**
  * 创建用户userAgent

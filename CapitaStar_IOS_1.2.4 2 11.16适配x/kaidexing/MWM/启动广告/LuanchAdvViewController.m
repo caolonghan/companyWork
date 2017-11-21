@@ -130,8 +130,14 @@
 }
 - (void)judgeVersionUpdate
 {
+//    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@"1.3.0",@"version_no",@"ios",@"tag_code", nil];
+//    [HttpClient requestWithMethod:@"POST" path:[Util makeRequestUrl:@"index" tp:@"addversion"] parameters:dic target:self success:^(NSDictionary *dic) {
+//        NSLog(@"修改版本号成功%@",dic);
+//    } failue:^(NSDictionary *dic) {
+//        
+//    }];
+    
     secondsCountDown = 3;
-    //http://kdmallapipv.companycn.net/APP_API/index?tp=getversion
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"ios",@"tag_code", nil];
     [HttpClient requestWithMethod:@"POST" path:[Util makeRequestUrl:@"index" tp:@"getversion"] parameters:params target:nil success:^(NSDictionary *dic) {
         NSLog(@"请求成功");
